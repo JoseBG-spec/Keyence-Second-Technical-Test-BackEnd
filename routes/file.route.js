@@ -2,7 +2,7 @@ const express = require('express')
 const fileRoute = express.Router()
 const multer  = require('multer')
 const path = require('path')
-let aspose = aspose || {};
+var aspose = aspose || {};
 aspose.cells = require("aspose.cells");
 let csv = require("csvtojson");
 

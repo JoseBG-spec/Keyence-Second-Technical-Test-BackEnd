@@ -16,8 +16,8 @@ mongoose
     console.error('Error connecting to mongo', err.reason)
   })
 
-const userAPI = require('../backend/routes/user.route')
-const fileAPI = require('../backend/routes/file.route')
+const userAPI = require('./routes/user.route')
+const fileAPI = require('./routes/file.route')
 
 const app = express()
 
