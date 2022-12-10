@@ -2,9 +2,9 @@ const express = require('express')
 const fileRoute = express.Router()
 const multer  = require('multer')
 const path = require('path')
-var aspose = aspose || {};
-aspose.cells = require("aspose.cells");
+const XLSX = require('xlsx')
 let csv = require("csvtojson");
+
 
 let storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -21,11 +21,14 @@ let UserModel = require('../models/User')
 fileRoute.post('/upload-file', upload.single('file'), function (req, res, next) {
     //console.log(req.file)
     if(req.file){
-    let workbook =  aspose.cells.Workbook(req.file.path);
+    let workbook = XLSX.readFile(req.file.path);
+    XLSX.writeFile(workbook, './uploads/convertions/file.csv', { bookType: "csv" });
+    //let sheet_name_list = workbook.SheetNames;
+    //let csvFile = XLSX.utils.sheet_to_csv(workbook.Sheets[sheet_name_list[0]])
+    //console.log(csvFile)
     
-    // Save as CSV
-    workbook.save("./uploads/convertions/file.csv" , aspose.cells.SaveFormat.CSV);
     //From CSV to JSON
+    
     csv()
     .fromFile("./uploads/convertions/file.csv")
     .then(function(jsonArrayObj){ //when parse finished, result will be emitted here. 
@@ -35,7 +38,7 @@ fileRoute.post('/upload-file', upload.single('file'), function (req, res, next) 
         jsonfile.forEach(element => {
           let day = element.Date.split('/')[0].length > 1 ? element.Date.split('/')[0] : '0' + element.Date.split('/')[0]
           let month = element.Date.split('/')[1].length > 1 ? element.Date.split('/')[1] : '0' + element.Date.split('/')[1]
-          element.Date = element.Date.split('/')[2] + "-" + month + "-" + day
+          element.Date = "20" + element.Date.split('/')[2] + "-" + month + "-" + day
 
           let punch = element['Punch In'].split(':')[0].length > 1 ? element['Punch In'].split(':')[0] : '0' + element['Punch In'].split(':')[0]
           element['Punch In'] =  punch + ":" +element['Punch In'].split(':')[1]
